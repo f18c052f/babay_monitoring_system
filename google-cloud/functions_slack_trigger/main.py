@@ -32,8 +32,5 @@ def slack_command(request):
     command_text = data.get("text", "run")
 
     # Pub/SubにPublish
-    try:
-        publisher.publish(topic_path, data=command_text.encode("utf-8"))
-        return jsonify({"response_type": "in_channel", "text": "部屋の状態を確認するね"})
-    except pubsub_v1.exceptions.PublisherError as e:
-        return jsonify({"response_type": "ephemeral", "text": f"Error: {str(e)}"})
+    publisher.publish(topic_path, data=command_text.encode("utf-8"))
+    return jsonify({"response_type": "in_channel", "text": "部屋の状態を確認するね"})

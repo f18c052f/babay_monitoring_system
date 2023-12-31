@@ -6,7 +6,7 @@ from google.oauth2 import service_account
 from slack_sdk.signature import SignatureVerifier
 
 # Publisherクライアントを初期化
-KEY_PATH = "./sa_slack-integration-service.json"
+KEY_PATH = "sa_slack-integration-service.json"
 publisher = pubsub_v1.publisher.Client.from_service_account_file(KEY_PATH)
 topic_path = publisher.topic_path(os.environ["GCP_PROJECT"], os.environ["PUBSUB_TOPIC"])
 
@@ -30,7 +30,10 @@ def slack_command(request):
     # Slashコマンドからのデータ取得
     data = request.form
     command_text = data.get("text", "run")
+    if not command_text:
+        command_text = "run"
+    command_data = command_text.encode("utf-8")
 
     # Pub/SubにPublish
-    publisher.publish(topic_path, data=command_text.encode("utf-8"))
+    publisher.publish(topic_path, data=command_data)
     return jsonify({"response_type": "in_channel", "text": "部屋の状態を確認するね"})

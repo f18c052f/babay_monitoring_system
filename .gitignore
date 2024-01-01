@@ -3,3 +3,6 @@ sa_*
 
 # python
 __pycache__
+
+# env
+.env

@@ -1,8 +1,9 @@
+import os
 import base64
 import json
 from google.cloud import pubsub_v1
 from dotenv import load_dotenv
-import os
+from SHT31 import SHT31
 
 # .env ファイルから環境変数を読み込む
 load_dotenv()
@@ -16,13 +17,12 @@ publisher = pubsub_v1.PublisherClient()
 subscription_path = subscriber.subscription_path(project_id, subscription_name)
 publish_topic_path = publisher.topic_path(project_id, publish_topic_name)
 
+# 温湿度センサー
+sht31 = SHT31()
+
 
 def read_sensor_data():
-    # センサーから温度と湿度を取得する処理
-    # この部分はセンサーに応じて実装してください
-    # 例:
-    # temperature = get_temperature()
-    # humidity = get_humidity()
+    # temperature, humidity = sht31.get_temperature_humidity()
     # return temperature, humidity
 
     # テストデータ

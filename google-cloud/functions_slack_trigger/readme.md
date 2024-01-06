@@ -27,7 +27,7 @@ $ cd function_slack_trigger
 $ gcloud functions deploy python-slack-function \
 --gen2 \
 --runtime=python39 \
---region=asia-northeast1 \
+--region=us-east1 \
 --source=. \
 --entry-point=slack_command \
 --trigger-http \

@@ -18,8 +18,6 @@ $ gcloud iam service-accounts keys create [FILE_NAME].json --iam-account [SERVIC
 main.pyのKEY_PATHを[FILE_NAME]（＝サービスアカウントキーファイル）に設定してください.
 
 
-### Set Slack Slash Command
-[ドキュメント](https://cloud.google.com/functions/docs/tutorials/slack?hl=ja#functions-clone-sample-repository-python)参照
 
 ### Deploy Function
 ```bash
@@ -35,3 +33,7 @@ $ gcloud functions deploy python-slack-function \
 --allow-unauthenticated
 ```
 [YOUR_PROJECT_ID],[YOUR_SLACK_SECRET],[YOUR_TOPIC]をご自身の環境に合わせて設定してください.
+
+### Set Slack Slash Command
+Slash CommandのRequest URLにデプロイしたcloud functions関数のURLを設定してください.<br>
+詳細は[ドキュメント](https://cloud.google.com/functions/docs/tutorials/slack?hl=ja#functions-clone-sample-repository-python)などを参照してください.

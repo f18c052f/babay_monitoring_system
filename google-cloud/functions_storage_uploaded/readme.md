@@ -3,6 +3,10 @@
 ### Create Cloud Storage Bucket
 米国リージョンは無料枠があるためus-east1に作成
 
+### Set Slack Scope and Get TOKEN
+OAuth Scopeにfiles:writeとchat:writeを追加してください.<br>
+※Slackにアプリをインストール後、Slackの該当チャンネルから「アプリを追加する」を忘れないよう注意してください.
+
 ### Add roles to Cloud Storage Service Agent
 CloudEvent trigger作成時にCloud StorageのサービスエージェントにPub/Subのパブリッシュ権限を付与してある必要があります.<br>
 [YOUR_PROJECT_ID]を自身の環境に合わせて設定してください.

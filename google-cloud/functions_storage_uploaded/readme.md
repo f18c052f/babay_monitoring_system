@@ -1,5 +1,8 @@
 # Deploy
 
+### Create Cloud Storage Bucket
+米国リージョンは無料枠があるためus-east1に作成
+
 ### Add roles to Cloud Storage Service Agent
 CloudEvent trigger作成時にCloud StorageのサービスエージェントにPub/Subのパブリッシュ権限を付与してある必要があります.<br>
 [YOUR_PROJECT_ID]を自身の環境に合わせて設定してください.
@@ -12,10 +15,11 @@ $ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
 ```
 
 ### Deploy Cloud Functions
---regionは使用するCloud Storageバケットのリージョンに合わせてあります（米国リージョンは無料枠あり）<br>
+--regionは使用するCloud Storageバケットのリージョンに合わせてあります<br>
 [YOUR_BUCKET_NAME],[YOUR_BOT_USER_OAUTH_TOKEN],[YOUR_SLACK_CHANNEL_ID]を自身の環境に合わせて設定してください
 
 ```bash
+$ cd functions_storage_uploaded
 $ gcloud functions deploy python-storage-function \
 --gen2 \
 --runtime=python39 \

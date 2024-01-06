@@ -2,7 +2,6 @@ import os
 from flask import jsonify
 import functions_framework
 from google.cloud import pubsub_v1
-from google.oauth2 import service_account
 from slack_sdk.signature import SignatureVerifier
 
 # Publisherクライアントを初期化

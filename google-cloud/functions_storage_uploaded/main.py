@@ -19,7 +19,7 @@ def check_status(response_status: int) -> str:
 
 
 @cloud_event
-def process_file_upload(event) -> str:
+def process_file_upload(event):
     """GCSにファイルがアップロードされたときに実行される関数"""
     storage_client = StorageClient(event)
 
@@ -27,6 +27,9 @@ def process_file_upload(event) -> str:
 
     if storage_client.file_name == IMAGE_NAME:
         data = storage_client.get_image_data()
+
+        # TODO: 寝返り検知処理
+
         response_status = slack.send_image(
             data=data, initial_comment="部屋の様子だよー", title=current_datetime
         )
@@ -39,4 +42,4 @@ def process_file_upload(event) -> str:
 
     result_status = check_status(response_status=response_status)
 
-    return result_status
+    print(result_status)

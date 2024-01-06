@@ -4,8 +4,8 @@ from google.cloud import storage
 
 class StorageClient:
     def __init__(self, event):
-        self.file_name = event["name"]
-        bucket_name = event["bucket"]
+        self.file_name = event.data["name"]
+        bucket_name = event.data["bucket"]
 
         self.client = storage.Client()
         self.bucket = self.client.bucket(bucket_name)

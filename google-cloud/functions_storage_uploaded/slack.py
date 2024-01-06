@@ -23,7 +23,7 @@ class slack:
     def send_image(
         cls, data: bytes, initial_comment: str, title: str, file_name: str = "image"
     ) -> int:
-        files = {"file", data}
+        files = {"file": data}
         param = {
             "channels": cls._SLACK_CHANNEL_ID,
             "filename": file_name,

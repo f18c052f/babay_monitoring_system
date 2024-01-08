@@ -1,27 +1,11 @@
 import os
 import base64
-import json
 from google.cloud import pubsub_v1
 from dotenv import load_dotenv
-from SHT31 import SHT31
-
-# .env ファイルから環境変数を読み込む
-load_dotenv()
-project_id = os.getenv("PROJECT_ID")
-subscription_name = os.getenv("SUBSCRIPTION_NAME")
-publish_topic_name = os.getenv("PUBLISH_TOPIC_NAME")
-
-# サブスクライバーとパブリッシャークライアントの初期化
-subscriber = pubsub_v1.SubscriberClient()
-publisher = pubsub_v1.PublisherClient()
-subscription_path = subscriber.subscription_path(project_id, subscription_name)
-publish_topic_path = publisher.topic_path(project_id, publish_topic_name)
-
-# 温湿度センサー
-sht31 = SHT31()
+from sht31 import SHT31
 
 
-def read_sensor_data():
+def read_sensor_data() -> (float, float):
     # temperature, humidity = sht31.get_temperature_humidity()
     # return temperature, humidity
 
@@ -29,23 +13,17 @@ def read_sensor_data():
     return 25.5, 40.0
 
 
-def encode_image(image_path):
+def encode_image(image_path: str) -> bytes:
     # 画像をBase64エンコードする
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
-def publish_message(temperature, humidity, encoded_image):
-    # JSON形式でメッセージを作成
-    message = {
-        "temperature": temperature,
-        "humidity": humidity,
-        "image_data": encoded_image,
-    }
-    message_json = json.dumps(message)
+def read_image_data() -> bytes:
+    # TODO: IRカメラから画像取得
 
-    # メッセージを別のトピックにPublish
-    publisher.publish(publish_topic_path, data=message_json.encode("utf-8"))
+    # テストデータ
+    return encode_image("./underReadry.jpeg")
 
 
 def callback(message):
@@ -54,18 +32,31 @@ def callback(message):
 
     # センサーデータと画像データの取得
     temperature, humidity = read_sensor_data()
-    encoded_image = encode_image("path/to/your/image.jpg")
+    image = read_image_data()
 
-    # 別のトピックにメッセージをPublish
-    publish_message(temperature, humidity, encoded_image)
+    # TODO: Cloud Storageへアップロード
 
 
-# サブスクリプションのリッスン開始
-streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
-print(f"Listening for messages on {subscription_path}...")
+def main():
+    # .env ファイルから環境変数を読み込む
+    load_dotenv()
+    project_id = os.getenv("PROJECT_ID")
+    subscription_name = os.getenv("SUBSCRIPTION_NAME")
 
-# スクリプトが終了しないように待機
-try:
-    streaming_pull_future.result()
-except KeyboardInterrupt:
-    streaming_pull_future.cancel()
+    # サブスクライバーとパブリッシャークライアントの初期化
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = subscriber.subscription_path(project_id, subscription_name)
+
+    # サブスクリプションのリッスン開始
+    streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
+    print(f"Listening for messages on {subscription_path}...")
+
+    # スクリプトが終了しないように待機
+    try:
+        streaming_pull_future.result()
+    except KeyboardInterrupt:
+        streaming_pull_future.cancel()
+
+
+if __name__ == "__main__":
+    main()

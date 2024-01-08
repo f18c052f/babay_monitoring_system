@@ -1,6 +1,0 @@
-flask
-functions-framework
-google-cloud-pubsub
-google-auth
-slack-sdk
-aiohttp

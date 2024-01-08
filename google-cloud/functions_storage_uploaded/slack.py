@@ -2,7 +2,7 @@ import os
 import requests
 
 
-class slack:
+class Slack:
     _SLACK_TOKEN = os.environ.get("SLACK_TOKEN")
     _SLACK_CHANNEL_ID = os.environ.get("SLACK_CHANNEL_ID")
     _headers = {"Authorization": f"Bearer {_SLACK_TOKEN}"}

@@ -1,6 +1,6 @@
 from datetime import datetime
 from functions_framework import cloud_event
-from slack import slack
+from slack import Slack
 from storage_client import StorageClient
 
 IMAGE_NAME = "ir_image.png"
@@ -30,13 +30,13 @@ def process_file_upload(event):
 
         # TODO: 寝返り検知処理
 
-        response_status = slack.send_image(
+        response_status = Slack.send_image(
             data=data, initial_comment="部屋の様子だよー", title=current_datetime
         )
     elif storage_client.file_name == JSON_NAME:
         temp, hum = storage_client.get_message_data()
         message = f"温度： {temp}[℃] / 湿度： {hum}[%]"
-        response_status = slack.send_text(message=message)
+        response_status = Slack.send_text(message=message)
     else:
         response_status = 404
 

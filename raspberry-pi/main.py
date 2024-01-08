@@ -1,40 +1,49 @@
 import os
-import base64
+import json
 from google.cloud import pubsub_v1
 from dotenv import load_dotenv
 from sht31 import SHT31
+from storage_client import StorageClient
+
+KEY_PATH_PUBSUB = "sa_slack-integration-service.json"
+IMAGE_NAME = "ir_image.png"
+JSON_NAME = "sht31.json"
 
 
-def read_sensor_data() -> (float, float):
+def create_json_file(temp: float, hum: float, filename: str):
+    data = {"temperature": temp, "humidity": hum}
+
+    # JSONファイルに書き込む
+    with open(filename, "w") as file:
+        json.dump(data, file)
+
+
+def create_sensor_data_file():
     # temperature, humidity = sht31.get_temperature_humidity()
-    # return temperature, humidity
 
     # テストデータ
-    return 25.5, 40.0
+    temperature, humidity = 99.9, 99.9
+    create_json_file(temperature, humidity, JSON_NAME)
 
 
-def encode_image(image_path: str) -> bytes:
-    # 画像をBase64エンコードする
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
-
-
-def read_image_data() -> bytes:
-    # TODO: IRカメラから画像取得
-
-    # テストデータ
-    return encode_image("./underReadry.jpeg")
+# def create_image_file():
+#     # TODO: IRカメラから画像取得
 
 
 def callback(message):
     print(f"Received message: {message}")
     message.ack()
 
-    # センサーデータと画像データの取得
-    temperature, humidity = read_sensor_data()
-    image = read_image_data()
+    # データ作成
+    create_json_file()
+    # create_image_file()
 
     # TODO: Cloud Storageへアップロード
+    bucket_name = os.getenv("GCS_BUCKET_NAME")
+    # 温湿度データ
+    StorageClient.upload_file(bucket_name, JSON_NAME, JSON_NAME)
+    # 画像
+    StorageClient.upload_file(bucket_name, "./underReady.png", IMAGE_NAME)
 
 
 def main():
@@ -44,7 +53,7 @@ def main():
     subscription_name = os.getenv("SUBSCRIPTION_NAME")
 
     # サブスクライバーとパブリッシャークライアントの初期化
-    subscriber = pubsub_v1.SubscriberClient()
+    subscriber = pubsub_v1.subscriber.Client.from_service_account_file(KEY_PATH_PUBSUB)
     subscription_path = subscriber.subscription_path(project_id, subscription_name)
 
     # サブスクリプションのリッスン開始

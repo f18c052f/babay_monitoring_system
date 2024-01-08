@@ -1,2 +1,4 @@
 google-cloud-pubsub
+google-cloud-storage
 python-dotenv
+smbus

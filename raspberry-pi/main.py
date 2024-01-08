@@ -19,14 +19,15 @@ def create_json_file(temp: float, hum: float, filename: str):
 
 
 def create_sensor_data_file():
-    # temperature, humidity = sht31.get_temperature_humidity()
+    temperature, humidity = SHT31.get_temperature_humidity()
 
-    # テストデータ
-    temperature, humidity = 99.9, 99.9
-    create_json_file(temperature, humidity, JSON_NAME)
+    temperature = round(temperature, 1)
+    humidity = round(humidity, 1)
+
+    create_json_file(temp=temperature, hum=humidity, filename=JSON_NAME)
 
 
-# def create_image_file():
+# def create_image_data_file():
 #     # TODO: IRカメラから画像取得
 
 
@@ -35,8 +36,8 @@ def callback(message):
     message.ack()
 
     # データ作成
-    create_json_file()
-    # create_image_file()
+    create_sensor_data_file()
+    # create_image_data_file()
 
     # TODO: Cloud Storageへアップロード
     bucket_name = os.getenv("GCS_BUCKET_NAME")

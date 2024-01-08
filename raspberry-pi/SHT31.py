@@ -22,14 +22,16 @@ class SHT31(object):
 
         return temperature, humidity
 
-    def _read_list(self, register: int, length: int) -> List[int]:
+    @classmethod
+    def _read_list(cls, register: int, length: int):
         try:
-            return self._bus.read_i2c_block_data(self._address, register, length)
+            return cls._bus.read_i2c_block_data(cls._address, register, length)
         except IOError as e:
             print(f"SHT31 Read Data Error: {e}")
 
-    def _write_list(self, register: int, data: List[int]):
+    @classmethod
+    def _write_list(cls, register: int, data):
         try:
-            self._bus.write_i2c_block_data(self._address, register, data)
+            cls._bus.write_i2c_block_data(cls._address, register, data)
         except IOError as e:
             print(f"SHT31 Write Data Error: {e}")

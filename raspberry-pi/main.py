@@ -4,6 +4,7 @@ from google.cloud import pubsub_v1
 from dotenv import load_dotenv
 from sht31 import SHT31
 from storage_client import StorageClient
+from picamera import Camera
 
 KEY_PATH_PUBSUB = "sa_slack-integration-service.json"
 IMAGE_NAME = "ir_image.png"
@@ -27,8 +28,10 @@ def create_sensor_data_file():
     create_json_file(temp=temperature, hum=humidity, filename=JSON_NAME)
 
 
-# def create_image_data_file():
-#     # TODO: IRカメラから画像取得
+def create_image_data_file():
+    camera = Camera()
+    camera.capture_image(IMAGE_NAME)
+    camera.close_camera()
 
 
 def callback(message):
@@ -37,14 +40,12 @@ def callback(message):
 
     # データ作成
     create_sensor_data_file()
-    # create_image_data_file()
+    create_image_data_file()
 
-    # TODO: Cloud Storageへアップロード
+    # Cloud Storageへアップロード
     bucket_name = os.getenv("GCS_BUCKET_NAME")
-    # 温湿度データ
     StorageClient.upload_file(bucket_name, JSON_NAME, JSON_NAME)
-    # 画像
-    StorageClient.upload_file(bucket_name, "./underReady.png", IMAGE_NAME)
+    StorageClient.upload_file(bucket_name, IMAGE_NAME, IMAGE_NAME)
 
 
 def main():

@@ -2,6 +2,7 @@ from datetime import datetime
 from functions_framework import cloud_event
 from slack import Slack
 from storage_client import StorageClient
+from vision_client import Vision
 
 IMAGE_NAME = "ir_image.png"
 JSON_NAME = "sht31.json"
@@ -28,7 +29,11 @@ def process_file_upload(event):
     if storage_client.file_name == IMAGE_NAME:
         data = storage_client.get_image_data()
 
-        # TODO: 寝返り検知処理
+        # 赤ちゃん検知処理
+        vision_client = Vision(data)
+        labels = vision_client.get_detection_labels()
+        if vision_client.isBabyExist(labels):
+            data = vision_client.draw_detect_text(data)
 
         response_status = Slack.send_image(
             data=data, initial_comment="部屋の様子だよー", title=current_datetime

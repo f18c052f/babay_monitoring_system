@@ -1,3 +1,5 @@
 functions-framework
+pillow
 google-cloud-storage
+google-cloud-vision
 requests
